@@ -2,7 +2,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 const axios = require("axios");
 const crypto = require("crypto-js");
-var SHA256 = require("crypto-js/sha256");
 
 const types = {
   type: "YOUDAO_TRANSLATION_WIDGET",
@@ -82,12 +81,13 @@ const types = {
       label: "开始",
       params: [
         {
-          key: "times",
-          label: "次数",
-          valueType: "number",
-          defaultValue: 5,
+          key: "str",
+          label: "翻译内容",
+          valueType: "string",
+          defaultValue: "",
         },
       ],
+      valueType: "string",
     },
   ],
   events: [
@@ -136,10 +136,11 @@ class BlinkButtonWidget extends InvisibleWidget {
   };
 
   // 方法定义
-  blink = (times) => {
-    const time_stamps = Date.parse(new Date());
-    const cur_time = time_stamps / 1000;
-    const q = "Hello world!";
+  blink = (str) => {
+    const time_stamps = new Date().getTime();
+    const cur_time = Math.round(new Date().getTime() / 1000);
+    // const q = "Hello world!";
+    const q = str;
     const APP_KEY = "7ae29ee68b869af8";
     const APP_SECRET = "BfhXtWH8EkNYEDyyWSQimHnO04VjcmOH";
     const signStr =
@@ -150,10 +151,22 @@ class BlinkButtonWidget extends InvisibleWidget {
       APP_SECRET;
     const sign = this.getDigest(signStr);
     console.log(sign);
+    var obj = {
+      q: q,
+      appKey: APP_KEY,
+      salt: time_stamps.toString(),
+      from: "en",
+      to: "zh-CHS",
+      sign: sign,
+      signType: "v3",
+      curtime: cur_time.toString(),
+    };
+    console.log(JSON.stringify(obj));
+    return JSON.stringify(obj);
   };
 
   getDigest = (string) => {
-    return SHA256(string).toString();
+    return crypto.SHA256(string).toString();
   };
 
   // 获取按钮点击次数
