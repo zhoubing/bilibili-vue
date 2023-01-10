@@ -26,13 +26,15 @@ const types = {
       key: "app_key",
       label: "AppKey",
       valueType: "string", // 字符串类型
-      defaultValue: "7ae29ee68b869af8",
+      // defaultValue: "7ae29ee68b869af8",
+      defaultValue: "",
     },
     {
       key: "app_secret",
       label: "AppSecret",
       valueType: "string", // 字符串类型
-      defaultValue: "BfhXtWH8EkNYEDyyWSQimHnO04VjcmOH",
+      // defaultValue: "BfhXtWH8EkNYEDyyWSQimHnO04VjcmOH",
+      defaultValue: "",
     },
     {
       key: "from",
@@ -49,7 +51,7 @@ const types = {
       key: "to",
       label: "目标语言",
       valueType: "string",
-      defaultValue: "auto",
+      defaultValue: "en",
       dropdown: [
         // 下拉属性
         { label: "英文", value: "en" },
@@ -59,7 +61,7 @@ const types = {
   ],
   methods: [
     {
-      key: "blink",
+      key: "translate",
       label: "开始",
       params: [
         {
@@ -74,12 +76,12 @@ const types = {
   ],
   events: [
     {
-      key: "onClick",
-      label: "被点击",
+      key: "onError",
+      label: "出错",
       params: [
         {
           key: "content",
-          label: "按钮文案",
+          label: "出错信息",
           valueType: "string",
         },
       ],
@@ -91,7 +93,12 @@ class BlinkButtonWidget extends InvisibleWidget {
   // 初始化
   constructor(props) {
     super(props);
-    console.log("constructor!!!");
+    console.log(this.app_key);
+    console.log(props.app_key);
+    this.app_key = props.app_key;
+    this.app_secret = props.app_secret;
+    this.to = props.to;
+    this.from = props.from;
   }
   // 方法定义，用于事件处理
   truncate = (s) => {
@@ -102,7 +109,11 @@ class BlinkButtonWidget extends InvisibleWidget {
   };
 
   // 方法定义
-  blink = (str) => {
+  translate = (str) => {
+    if (!this.app_key || !this.app_secret) {
+      this.emit("onError", "app key或app secret为空");
+      return;
+    }
     const time_stamps = new Date().getTime();
     const cur_time = Math.round(new Date().getTime() / 1000);
     // const q = "Hello world!";
@@ -138,7 +149,6 @@ class BlinkButtonWidget extends InvisibleWidget {
       "curtime=" +
       cur_time +
       "&";
-    this.emit("onClick", this.content);
     console.log(result);
     return result;
   };
