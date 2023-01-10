@@ -23,12 +23,6 @@ const types = {
       defaultValue: 36,
     },
     {
-      key: "trans_content",
-      label: "翻译内容",
-      valueType: "string", // 字符串类型
-      defaultValue: "Hello",
-    },
-    {
       key: "app_key",
       label: "AppKey",
       valueType: "string", // 字符串类型
@@ -62,18 +56,6 @@ const types = {
         { label: "中文", value: "zh-CHS" },
       ],
     },
-    {
-      key: "disabled",
-      label: "是否禁用",
-      valueType: "boolean", // 布尔类型
-      defaultValue: false,
-    },
-    {
-      key: "backgroundColor",
-      label: "按钮颜色",
-      valueType: "color",
-      defaultValue: "#1495ef",
-    },
   ],
   methods: [
     {
@@ -105,29 +87,13 @@ const types = {
   ],
 };
 
-// 生成随机颜色
-function getRandomColor() {
-  const r = Math.floor(Math.random() * 255);
-  const g = Math.floor(Math.random() * 255);
-  const b = Math.floor(Math.random() * 255);
-  const color = "rgba(" + r + "," + g + "," + b + ")";
-  return color;
-}
-
 class BlinkButtonWidget extends InvisibleWidget {
   // 初始化
   constructor(props) {
     super(props);
     console.log("constructor!!!");
   }
-
   // 方法定义，用于事件处理
-  onClick = () => {
-    console.log("onClick!!!");
-    this.emit("onClick", this.content);
-    this.clickCount++;
-  };
-
   truncate = (s) => {
     const len = s.length;
     return len <= 20
@@ -146,29 +112,7 @@ class BlinkButtonWidget extends InvisibleWidget {
     const signStr =
       APP_KEY + this.truncate(q) + time_stamps + cur_time + APP_SECRET;
     const sign = this.getDigest(signStr);
-    console.log(sign);
-    var obj = {
-      q: q,
-      appKey: APP_KEY,
-      salt: time_stamps,
-      from: "en",
-      to: "zh-CHS",
-      sign: sign,
-      signType: "v3",
-      curtime: cur_time,
-    };
-    // console.log(JSON.stringify(obj));
-    // return JSON.stringify(obj);
-    // let result = "q=" + "\"" + q + "\""
-    //           + "&" + "sign=" +  "\"" + sign + "\""
-    //           + "&" + "appKey=" + "\"" + APP_KEY + "\""
-    //           + "&" + "salt=" +  "\"" + time_stamps + "\""
-    //           + "&" + "from=" +  "\"" + "en" + "\""
-    //           + "&" + "to=" +  "\"" + "zh-CHS" + "\""
-    //           + "&" + "signType=" +  "\"" + "v3" + "\""
-    //           + "&" + "curtime=" +  "\"" + cur_time + "\""
-    //           + "&";
-
+    // console.log(sign);
     let result =
       "q=" +
       q +
@@ -194,18 +138,13 @@ class BlinkButtonWidget extends InvisibleWidget {
       "curtime=" +
       cur_time +
       "&";
-
+    this.emit("onClick", this.content);
     console.log(result);
     return result;
   };
 
   getDigest = (string) => {
     return crypto.SHA256(string).toString();
-  };
-
-  // 获取按钮点击次数
-  getClickCount = () => {
-    return this.clickCount;
   };
 }
 
