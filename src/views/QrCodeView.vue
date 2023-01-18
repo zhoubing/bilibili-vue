@@ -60,10 +60,12 @@ export default {
     },
     download() {
       this.axios
-        .get("http://localhost:8080/api/dataservice/qrcode")
+        .post("http://localhost:8080/api/dataservice/download", {
+          url: "https://www.bilibili.com/video/BV18K411275r/?spm_id_from=333.999.0.0",
+        })
         .then((result) => {
-          console.log(result);
-          this.qrcode = "data:image/jpeg;base64," + result.data;
+          console.log(result.data);
+          // this.qrcode = "data:image/jpeg;base64," + result.data;
         })
         .catch((err) => {
           console.log(err);
